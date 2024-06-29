@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Changement pour utiliser MaterialCommunityIcons
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import auth from '@react-native-firebase/auth';
 
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -11,11 +12,26 @@ import InboxScreen from '../screens/InboxScreen';
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+  function onAuthStateChanged(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  if (initializing) return null; // Affiche un écran de chargement pendant l'initialisation
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
-          let iconName: string;
+          let iconName;
 
           if (route.name === 'Home') {
             iconName = 'home';
@@ -26,7 +42,7 @@ const BottomTabNavigator = () => {
           } else if (route.name === 'Boîte de réception') {
             iconName = 'inbox';
           } else {
-            iconName = 'help-circle'; // Icône par défaut
+            iconName = 'help-circle';
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -38,7 +54,10 @@ const BottomTabNavigator = () => {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Amis" component={FriendsScreen} />
       <Tab.Screen name="Boîte de réception" component={InboxScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Profile"
+        component={user ? ProfileScreen : LoginScreen}
+      />
     </Tab.Navigator>
   );
 };
