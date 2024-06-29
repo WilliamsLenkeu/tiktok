@@ -1,68 +1,68 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, FlatList, Dimensions } from 'react-native';
 import VideoItem from '../components/VideoItem';
+import firestore from '@react-native-firebase/firestore';
 
 const { height } = Dimensions.get('window');
 
 interface Video {
   id: string;
-  videoUri: string;
+  videoUrl: string;
   username: string;
   description: string;
+  userId: string;
 }
 
-const dummyData: Video[] = [
-  {
-    id: '1',
-    videoUri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-    username: 'user1',
-    description: 'Big Buck Bunny',
-  },
-  {
-    id: '2',
-    videoUri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
-    username: 'user2',
-    description: 'Elephant\'s Dream',
-  },
-  {
-    id: '3',
-    videoUri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-    username: 'user3',
-    description: 'For Bigger Blazes',
-  },
-  {
-    id: '4',
-    videoUri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
-    username: 'user4',
-    description: 'For Bigger Blazes',
-  },
-  {
-    id: '5',
-    videoUri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
-    username: 'user5',
-    description: 'For Bigger Blazes',
-  },
-  {
-    id: '6',
-    videoUri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
-    username: 'user6',
-    description: 'For Bigger Blazes',
-  },
-];
-
 const HomeScreen: React.FC = () => {
-  const renderItem = ({ item }: { item: Video }) => (
-    <VideoItem
-      videoUri={item.videoUri}
-      username={item.username}
-      description={item.description}
-    />
-  );
+  const [videos, setVideos] = useState<Video[]>([]);
+
+  useEffect(() => {
+    const fetchVideos = async () => {
+      try {
+        console.log('Récupération initiale des vidéos depuis Firestore...');
+        const videosSnapshot = await firestore().collection('upload').get();
+        const fetchedVideos: Video[] = videosSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Video[];
+        console.log('Vidéos récupérées:', fetchedVideos);
+        setVideos(fetchedVideos);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des vidéos:', error);
+      }
+    };
+
+    const unsubscribe = firestore().collection('upload').onSnapshot(snapshot => {
+      console.log('Mise à jour en temps réel des vidéos depuis Firestore...');
+      const updatedVideos: Video[] = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Video[];
+      setVideos(updatedVideos);
+    });
+
+    fetchVideos();
+
+    // Clean up listener
+    return () => unsubscribe();
+  }, []);
+
+  const renderItem = ({ item }: { item: Video }) => {
+    console.log('Affichage de la vidéo:', item);
+    return (
+      <VideoItem
+        videoUri={item.videoUrl}
+        username={item.username}
+        description={item.description}
+        userId={item.userId}
+      />
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: 'black' }}>
       <FlatList
-        data={dummyData}
+        data={videos}
         renderItem={renderItem}
         keyExtractor={item => item.id}
         snapToInterval={height}

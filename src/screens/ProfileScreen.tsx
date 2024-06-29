@@ -1,31 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
+
+interface UserData {
+  displayName: string;
+  photoURL: string;
+}
 
 const ProfileScreen: React.FC = () => {
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [userData, setUserData] = useState<UserData>({ displayName: '', photoURL: '' });
+
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        setUser(user);
+        const userDoc = await firestore().collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          setUserData(userDoc.data() as UserData);
+        }
+      }
+    });
+
+    return subscriber; // unsubscribe on unmount
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      await auth().signOut();
+      console.log('User signed out successfully.');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>Vous n'êtes pas connecté.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Image
         style={styles.avatar}
-        source={{ uri: 'https://via.placeholder.com/150' }}
+        source={{ uri: user.photoURL || 'https://via.placeholder.com/150' }}
       />
-      <Text style={styles.username}>@username</Text>
+      <Text style={styles.username}>{user.displayName || '@username'}</Text>
       <Text style={styles.bio}>Bio de l'utilisateur</Text>
       <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>100</Text>
-          <Text style={styles.statLabel}>Abonnés</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>50</Text>
-          <Text style={styles.statLabel}>Abonnements</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>1000</Text>
-          <Text style={styles.statLabel}>Likes</Text>
-        </View>
+        {/* Statistiques de l'utilisateur */}
       </View>
-      <TouchableOpacity style={styles.editButton}>
-        <Text style={styles.editButtonText}>Modifier le profil</Text>
+      <TouchableOpacity style={styles.editButton} onPress={handleSignOut}>
+        <Text style={styles.editButtonText}>Se déconnecter</Text>
       </TouchableOpacity>
     </View>
   );
@@ -38,6 +68,10 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
+  message: {
+    fontSize: 18,
+    color: 'gray',
+  },
   avatar: {
     width: 100,
     height: 100,
@@ -48,6 +82,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
+    color: 'black',
   },
   bio: {
     textAlign: 'center',

@@ -1,24 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import auth from '@react-native-firebase/auth';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 
 import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import FriendsScreen from '../screens/FriendsScreen';
 import InboxScreen from '../screens/InboxScreen';
+import UploadScreen from '../screens/UploadScreen';
+import TimeManager from '../screens/TimeManagerScreen';
 
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = () => {
+const BottomTabNavigator: React.FC = () => {
   const [initializing, setInitializing] = useState(true);
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
-  function onAuthStateChanged(user) {
+  const onAuthStateChanged = (user: FirebaseAuthTypes.User | null) => {
     setUser(user);
     if (initializing) setInitializing(false);
-  }
+  };
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -33,16 +35,25 @@ const BottomTabNavigator = () => {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Profile') {
-            iconName = 'account';
-          } else if (route.name === 'Amis') {
-            iconName = 'message-text';
-          } else if (route.name === 'Boîte de réception') {
-            iconName = 'inbox';
-          } else {
-            iconName = 'help-circle';
+          switch (route.name) {
+            case 'Home':
+              iconName = 'home';
+              break;
+            case 'Profile':
+              iconName = 'account';
+              break;
+            case 'Amis':
+              iconName = 'message-text';
+              break;
+            case 'Time Manager':
+              iconName = 'clock';
+              break;
+            case 'Upload':
+              iconName = 'plus-circle';
+              break;
+            default:
+              iconName = 'help-circle';
+              break;
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -53,10 +64,15 @@ const BottomTabNavigator = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Amis" component={FriendsScreen} />
-      <Tab.Screen name="Boîte de réception" component={InboxScreen} />
+      <Tab.Screen name="Time Manager" component={TimeManager} />
       <Tab.Screen
         name="Profile"
         component={user ? ProfileScreen : LoginScreen}
+      />
+      <Tab.Screen
+        name="Upload"
+        component={UploadScreen}
+        options={{ tabBarLabel: 'Upload' }} // Optionnel: étiquette de tabulation
       />
     </Tab.Navigator>
   );

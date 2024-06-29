@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "940000145282",
-    "project_id": "tiktok-b3ec8",
-    "storage_bucket": "tiktok-b3ec8.appspot.com"
+    "project_number": "248209830274",
+    "project_id": "tiktokapp-a8619",
+    "storage_bucket": "tiktokapp-a8619.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:940000145282:android:ed17d0e8749f1b8ab7699b",
+        "mobilesdk_app_id": "1:248209830274:android:b42662c1cdebe655ca1f9b",
         "android_client_info": {
-          "package_name": "com.marilane"
+          "package_name": "com.tiptopict"
         }
       },
       "oauth_client": [
         {
-          "client_id": "940000145282-p713g2iavp8mrvuul3kjq3q5hgj1a3rk.apps.googleusercontent.com",
+          "client_id": "248209830274-1n2qduvtdag40b2v3bgli6n6n07juqrv.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.marilane",
+            "package_name": "com.tiptopict",
             "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
-          "client_id": "940000145282-phku0793de7jba3jmllp7d74sapgpmd0.apps.googleusercontent.com",
+          "client_id": "248209830274-gedhu45ofrunsqs5u774hgcoami5qckl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBlMfAFWq3zKBSdPoWuz3u6K1bpZXkeT0M"
+          "current_key": "AIzaSyAdSzCP7n9o2iqCB5WHKFbrqBnMDpLxNss"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "940000145282-phku0793de7jba3jmllp7d74sapgpmd0.apps.googleusercontent.com",
+              "client_id": "248209830274-a6jtc9rt85b0kb475pk3obbvbdtltujs.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
