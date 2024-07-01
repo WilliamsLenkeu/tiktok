@@ -10,6 +10,7 @@ import FriendsScreen from '../screens/FriendsScreen';
 import InboxScreen from '../screens/InboxScreen';
 import UploadScreen from '../screens/UploadScreen';
 import TimeManager from '../screens/TimeManagerScreen';
+import TodoList from '../screens/TodoListScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -45,6 +46,9 @@ const BottomTabNavigator: React.FC = () => {
             case 'Amis':
               iconName = 'message-text';
               break;
+              case 'To Do List':
+                iconName = 'task';
+                break;
             case 'Time Manager':
               iconName = 'clock';
               break;
@@ -54,6 +58,7 @@ const BottomTabNavigator: React.FC = () => {
             default:
               iconName = 'help-circle';
               break;
+            
           }
 
           return <Icon name={iconName} size={size} color={color} />;
@@ -64,6 +69,7 @@ const BottomTabNavigator: React.FC = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Amis" component={FriendsScreen} />
+      <Tab.Screen name="To Do List" component={TodoList} />
       <Tab.Screen name="Time Manager" component={TimeManager} />
       <Tab.Screen
         name="Profile"
