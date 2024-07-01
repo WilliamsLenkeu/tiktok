@@ -7,9 +7,8 @@ import HomeScreen from '../screens/HomeScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import FriendsScreen from '../screens/FriendsScreen';
-import InboxScreen from '../screens/InboxScreen';
-import UploadScreen from '../screens/UploadScreen';
-import TimeManager from '../screens/TimeManagerScreen';
+import TimeManagerScreen from '../screens/TimeManagerScreen';
+import LiveScreen from '../screens/LiveScreen'; // Importez la nouvelle screen LiveScreen
 
 const Tab = createBottomTabNavigator();
 
@@ -48,8 +47,8 @@ const BottomTabNavigator: React.FC = () => {
             case 'Time Manager':
               iconName = 'clock';
               break;
-            case 'Upload':
-              iconName = 'plus-circle';
+            case 'Live': // Mettez à jour le nom de l'onglet pour Live
+              iconName = 'video';
               break;
             default:
               iconName = 'help-circle';
@@ -64,15 +63,14 @@ const BottomTabNavigator: React.FC = () => {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Amis" component={FriendsScreen} />
-      <Tab.Screen name="Time Manager" component={TimeManager} />
+      <Tab.Screen name="Time Manager" component={TimeManagerScreen} />
       <Tab.Screen
         name="Profile"
         component={user ? ProfileScreen : LoginScreen}
       />
       <Tab.Screen
-        name="Upload"
-        component={UploadScreen}
-        options={{ tabBarLabel: 'Upload' }}
+        name="Live" // Mettez à jour le nom de l'onglet pour Live
+        component={LiveScreen} // Assurez-vous d'avoir créé et importé LiveScreen
       />
     </Tab.Navigator>
   );
