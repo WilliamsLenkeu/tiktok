@@ -9,9 +9,10 @@ interface VideoItemProps {
   username: string;
   description: string;
   userId: string;
+  paused: boolean;
 }
 
-const VideoItem: React.FC<VideoItemProps> = ({ videoUri, username, description }) => {
+const VideoItem: React.FC<VideoItemProps> = ({ videoUri, username, description, paused }) => {
   return (
     <View style={styles.container}>
       <Video
@@ -19,7 +20,7 @@ const VideoItem: React.FC<VideoItemProps> = ({ videoUri, username, description }
         style={styles.video}
         resizeMode="cover"
         repeat
-        paused={false}
+        paused={paused}  // Controls the video playback based on the paused prop
       />
       <View style={styles.uiContainer}>
         <View style={styles.bottomContainer}>

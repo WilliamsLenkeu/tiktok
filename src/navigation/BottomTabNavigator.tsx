@@ -72,7 +72,7 @@ const BottomTabNavigator: React.FC = () => {
       <Tab.Screen
         name="Upload"
         component={UploadScreen}
-        options={{ tabBarLabel: 'Upload' }} // Optionnel: étiquette de tabulation
+        options={{ tabBarLabel: 'Upload' }}
       />
     </Tab.Navigator>
   );
